@@ -14,4 +14,12 @@
     <string name="_5">5</string>
     <string name="insert">Insert</string>
     <string name="show_list">Show List</string>
+    <string name="show_all_songs_with_5_stars">Show all songs with 5 stars</string>
+    <string name="back">Back</string>
+    <string-array name="spinnerItems">
+        <item>2023</item>
+        <item>2022</item>
+        <item>2021</item>
+        <item>2020</item>
+    </string-array>
 </resources>

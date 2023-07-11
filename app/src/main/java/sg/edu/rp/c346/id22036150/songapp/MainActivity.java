@@ -3,6 +3,7 @@ package sg.edu.rp.c346.id22036150.songapp;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -19,10 +20,7 @@ public class MainActivity extends AppCompatActivity {
     EditText etTitle, etSingers, etYear;
     RadioGroup rgStars;
     RadioButton rb1, rb2, rb3, rb4, rb5;
-    ArrayList<String> alSongs;
-    ArrayList<Song> songs;
     DBHelper db = new DBHelper(MainActivity.this);
-    int stars;
 
 
 
@@ -43,49 +41,48 @@ public class MainActivity extends AppCompatActivity {
         etSingers = findViewById(R.id.etSinger);
         etYear = findViewById(R.id.etYear);
 
-        alSongs = new ArrayList<>();
 
-        int btnSelected = rgStars.getCheckedRadioButtonId();
-        if(btnSelected == R.id.rb1){
-            stars = 1;
-        } else if(btnSelected == R.id.rb2){
-            stars = 2;
-        }else if(btnSelected == R.id.rb3){
-            stars = 3;
-        }else if(btnSelected == R.id.rb4){
-            stars = 4;
-        }else if(btnSelected == R.id.rb5){
-            stars = 5;
-        }
 
 
         btnInsert.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                // Create the DBHelper object, passing in the
-                // activity's Context
-                // Insert a task
-                db.insertSong(etTitle.getText().toString(), etSingers.getText().toString(), Integer.parseInt(etYear.getText().toString()), stars);
+                String title = etTitle.getText().toString();
+                String singer = etSingers.getText().toString();
+                int year = Integer.parseInt(etYear.getText().toString());
+                int star = 0;
 
+                int selectedStar = rgStars.getCheckedRadioButtonId();
+                if (selectedStar == R.id.rb1){
+                    star = 1;
+                } else if (selectedStar == R.id.rb2){
+                    star = 2;
+                } else if (selectedStar == R.id.rb3){
+                    star = 3;
+                } else if (selectedStar == R.id.rb4){
+                    star = 4;
+                } else if (selectedStar == R.id.rb5){
+                    star = 5;
+                }
+
+                DBHelper db = new DBHelper(MainActivity.this);
+                db.insertSong(title, singer, year, star);
+                etTitle.getText().clear();
+                etSingers.getText().clear();
+                etYear.getText().clear();
+                rgStars.clearCheck();
             }
         });
 
         btnShow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ArrayList<String> data = db.getSongContent();
-                songs = db.getSongs();
-                db.close();
-
-                for(int i = 0; i< data.size(); i++){
-                    String lvTxt = songs.get(i).toString();
-                    alSongs.add(lvTxt);
-                }
                 Intent intent = new Intent(MainActivity.this,DetailsActivity.class);
-                intent.putStringArrayListExtra("songs",alSongs);
                 startActivity(intent);
             }
         });
 
     }
+
+
 }

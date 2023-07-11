@@ -1,6 +1,8 @@
 package sg.edu.rp.c346.id22036150.songapp;
 
-public class Song {
+import java.io.Serializable;
+
+public class Song implements Serializable {
     private static int count = 1;
     private int id;
     private String title;
@@ -9,7 +11,14 @@ public class Song {
     private int stars;
 
     public Song(String title, String singers, int year, int stars) {
-        this.id = count++;
+        this.title = title;
+        this.singers = singers;
+        this.year = year;
+        this.stars = stars;
+    }
+
+    public Song(int id, String title, String singers, int year, int stars) {
+        this.id = id;
         this.title = title;
         this.singers = singers;
         this.year = year;
@@ -18,16 +27,29 @@ public class Song {
 
     public int getId() { return id; }
 
-    public String getDescription() { return title; }
+    public String getTitle() { return title; }
 
-    public String getDate() { return singers;}
+    public String getSingers() { return singers;}
 
     public int getYear() { return year;}
 
     public int getStar() { return stars;}
 
+    public void setSongContent(String title, String singer, int year, int stars){
+        this.title = title;
+        this.singers = singer;
+        this.year = year;
+        this.stars = stars;
+    }
+
+    public void setID(int id){
+        this.id = id;
+    }
+
     public String toString() {
-        return id + "\n" + title + "\n" + singers + "\n" + year;
+        String starString = "*".repeat(stars);
+        String output = String.format("Title: %s\nArtist: %s\nYear: %d\nRating: %s", title, singers, year, starString);
+        return output;
     }
 
 }
