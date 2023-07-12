@@ -19,16 +19,8 @@ public class DetailsActivity extends AppCompatActivity {
     Button btnBack, btnStars;
     ArrayList<Song> songs;
     ArrayAdapter<Song> aaSongs;
-    DBHelper dbh = new DBHelper(DetailsActivity.this);
 
-    @Override
-    protected void onResume() {
-        super.onResume();
 
-        songs.clear();
-        songs.addAll(dbh.getSongs());
-        aaSongs.notifyDataSetChanged();
-    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,21 +29,19 @@ public class DetailsActivity extends AppCompatActivity {
         Intent intentSelected = getIntent();
         btnBack = findViewById(R.id.btnBack);
         btnStars = findViewById(R.id.btnStars);
-        songs = new ArrayList<Song>();
         lvSongs = findViewById(R.id.lvSongs);
 
+        songs = new ArrayList<Song>();
         aaSongs = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, songs);
         lvSongs.setAdapter(aaSongs);
 
+
+        DBHelper dbh = new DBHelper(DetailsActivity.this);
         songs.clear();
-        songs.addAll(dbh.getSongs());
+        songs.addAll(dbh.getSong());
         aaSongs.notifyDataSetChanged();
 
-        for(int i = 0; i < songs.size(); i++){
-            if(!(songs.get(i) == null)){
-                songs.get(i).setID(i);
-            }
-        }
+        ArrayList<String> songData = dbh.getSongContent();
 
 
         btnBack.setOnClickListener(new View.OnClickListener() {
@@ -77,9 +67,18 @@ public class DetailsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 DBHelper dbh = new DBHelper(DetailsActivity.this);
-                songs.clear();
-                songs.addAll(dbh.getSongs("5"));
-                aaSongs.notifyDataSetChanged();
+
+
+                ArrayList<Song> songsFive = new ArrayList<>();
+
+                for(Song song : songs){
+                    if(song.getStar() == 5){
+                        songsFive.add(song);
+                    }
+
+                    ArrayAdapter<Song> adapterFive = new ArrayAdapter<>(DetailsActivity.this, android.R.layout.simple_list_item_1, songsFive);
+                    lvSongs.setAdapter(adapterFive);
+                }
             }
         });
     }

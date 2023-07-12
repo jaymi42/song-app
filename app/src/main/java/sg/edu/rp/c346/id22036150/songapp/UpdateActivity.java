@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -48,13 +49,17 @@ public class UpdateActivity extends AppCompatActivity {
         Intent intentSelected = getIntent();
         songs = intentSelected.getStringArrayListExtra("songs");
         data = (Song) intentSelected.getSerializableExtra("data");
+
+
         etID.setText("" + data.getId());
         etID.setEnabled(false);
         etTitle.setText(data.getTitle());
         etSingers.setText(data.getSingers());
         etYear.setText("" + data.getYear());
         rating = data.getStar();
-        if(rating == 1){
+        rgStar.check(data.getStar());
+
+        /**if(rating == 1){
             rb1.setChecked(true);
         } else if(rating == 2){
             rb2.setChecked(true);
@@ -64,7 +69,7 @@ public class UpdateActivity extends AppCompatActivity {
             rb4.setChecked(true);
         }else if(rating == 5){
             rb5.setChecked(true);
-        }
+        }**/
 
 
         btnUpdate.setOnClickListener(new View.OnClickListener() {
@@ -72,41 +77,79 @@ public class UpdateActivity extends AppCompatActivity {
             public void onClick(View v) {
                 DBHelper dbh = new DBHelper(UpdateActivity.this);
 
-                int selectedStar = rgStar.getCheckedRadioButtonId();
-                int stars = 0;
-                if (selectedStar == R.id.rbtn1){
-                    stars = 1;
-                } else if (selectedStar == R.id.rbtn2){
-                    stars = 2;
-                }else if (selectedStar == R.id.rbtn3){
-                    stars = 3;
-                }else if (selectedStar == R.id.rbtn4){
-                    stars = 4;
-                }else if (selectedStar == R.id.rbtn5){
-                    stars = 5;
+                String title = etTitle.getText().toString();
+                String singer = etSingers.getText().toString();
+                int year = Integer.parseInt(etYear.getText().toString());
+
+                data.setTitle(title);
+                data.setSinger(singer);
+                data.setYear(year);
+
+                int rating = 0;
+
+                int checked = rgStar.getCheckedRadioButtonId();
+                if (checked == R.id.rbtn1){
+                    rating = 1;
+                } else if (checked == R.id.rbtn2){
+                    rating = 2;
+                }else if (checked == R.id.rbtn3){
+                    rating = 3;
+                }else if (checked == R.id.rbtn4){
+                    rating = 4;
+                }else if (checked == R.id.rbtn5){
+                    rating = 5;
                 }
 
+
+                data.setStars(rating);
+
+                dbh.updateSong(data);
+                dbh.close();
+
+                Toast.makeText(UpdateActivity.this, "Song updated successfully", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(UpdateActivity.this, DetailsActivity.class);
+                startActivity(intent);
+            }
+        });/**btnUpdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DBHelper dbh = new DBHelper(UpdateActivity.this);
+
+                int stars = 0;
+                if (rb1.isChecked()){
+                    stars = 1;
+                } else if (rb2.isChecked()){
+                    stars = 2;
+                }else if (rb3.isChecked()){
+                    stars = 3;
+                }else if (rb4.isChecked()){
+                    stars = 4;
+                }else if (rb5.isChecked()){
+                    stars = 5;
+                }
 
                 String title = etTitle.getText().toString();
                 String singer = etSingers.getText().toString();
                 int year = Integer.parseInt(etYear.getText().toString());
 
-                data.setID(data.getId());
-                data.setSongContent(title, singer, year, stars);
+                data.setTitle(title);
+                data.setSinger(singer);
+                data.setYear(year);
+                data.setStars(stars);
+
                 dbh.updateSong(data);
                 dbh.close();
-                finish();
+
                 Intent intent = new Intent(UpdateActivity.this, DetailsActivity.class);
                 startActivity(intent);
             }
-        });
+        });**/
 
         btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 DBHelper dbh = new DBHelper(UpdateActivity.this);
                 dbh.deleteSong(data.getId());
-                finish();
                 Intent intent = new Intent(UpdateActivity.this, DetailsActivity.class);
                 startActivity(intent);
             }
@@ -117,7 +160,6 @@ public class UpdateActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(UpdateActivity.this, DetailsActivity.class);
                 startActivity(intent);
-                finish();
             }
         });
 

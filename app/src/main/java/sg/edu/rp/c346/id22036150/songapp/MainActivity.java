@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -47,30 +48,40 @@ public class MainActivity extends AppCompatActivity {
         btnInsert.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                String title = etTitle.getText().toString();
-                String singer = etSingers.getText().toString();
-                int year = Integer.parseInt(etYear.getText().toString());
-                int star = 0;
 
-                int selectedStar = rgStars.getCheckedRadioButtonId();
-                if (selectedStar == R.id.rb1){
-                    star = 1;
-                } else if (selectedStar == R.id.rb2){
-                    star = 2;
-                } else if (selectedStar == R.id.rb3){
-                    star = 3;
-                } else if (selectedStar == R.id.rb4){
-                    star = 4;
-                } else if (selectedStar == R.id.rb5){
-                    star = 5;
+
+                DBHelper dbh = new DBHelper(MainActivity.this);
+
+                String title = etTitle.getText().toString();
+                String singers = etSingers.getText().toString();
+                int year = Integer.parseInt(etYear.getText().toString());
+                int stars = 0;
+
+
+                int rating = rgStars.getCheckedRadioButtonId();
+
+                if (rating == R.id.rb1)
+                {
+                    stars = 1;
+                }
+                else if (rating == R.id.rb2)
+                {
+                    stars = 2;
+                }
+                else if (rating == R.id.rb3)
+                {
+                    stars = 3;
+                }
+                else if (rating == R.id.rb4)
+                {
+                    stars = 4;
+                }
+                else if (rating == R.id.rb5)
+                {
+                    stars = 5;
                 }
 
-                DBHelper db = new DBHelper(MainActivity.this);
-                db.insertSong(title, singer, year, star);
-                etTitle.getText().clear();
-                etSingers.getText().clear();
-                etYear.getText().clear();
-                rgStars.clearCheck();
+                db.insertSong(title, singers, year, stars);
             }
         });
 
